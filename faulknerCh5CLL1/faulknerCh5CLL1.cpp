@@ -2,13 +2,15 @@
 /*************************************
 * B. Faulkner
 * 12/17/24
-* V 1.0.0
+* V 2.0.0
 **************************************/
 
 #include <iostream>
 #include <random>
+#include <fstream>
 #include <limits>  
 #include <cctype>  
+#include <string>
 using namespace std;
 
 int main() {
@@ -22,10 +24,15 @@ int main() {
     bool isOverWeight = false;
     int horseClassification;
     int horseWeight;
+    ifstream inputFile;
+
+    string fileHorseName;
+    char fileHorseClass;
+    int fileHorseWeight;
     cout << "Welcome to the C++ Comprehensive Loop Lab 1.\n";
     do {
         do {
-            cout << "Please enter a number from the menu.\n1) Feed Calculator.\n2) Exit.\n";
+            cout << "Please enter a number from the menu.\n1) Feed Calculator.\n2) Read File.\n3) Exit\n";
             while (!(cin >> menuChoice) || menuChoice < 1 || menuChoice > 2) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -89,7 +96,56 @@ int main() {
                     cout << "Perfection for your classification.\nWe at Horse Co. say, to feed your horse 3.0 Pounds of feed.\n";
                 }
                 break;
+            
             case 2:
+                inputFile.open("HorseStable.txt");
+                if (!inputFile.is_open()) {  
+                    cout << "Error opening the file!\n";
+                    break;  
+                }
+                cout << "Processing...\n";
+                while (inputFile >> fileHorseWeight >> fileHorseClass >> fileHorseName) {
+
+
+                    if (fileHorseClass == 'a') {  // Light Riding Horse
+                        if (fileHorseWeight < 840) {
+                            isUnderWeight = true;
+                        }
+                        else if (fileHorseWeight > 1200) {
+                            isOverWeight = true;
+                        }
+                    }
+                    else if (fileHorseClass == 'b') {  // Large Riding Horse
+                        if (fileHorseWeight < 1110) {
+                            isUnderWeight = true;
+                        }
+                        else if (fileHorseWeight > 1300) {
+                            isOverWeight = true;
+                        }
+                    }
+                    else if (fileHorseClass == 'c') {  // Draft Horse
+                        if (fileHorseWeight < 1500) {
+                            isUnderWeight = true;
+                        }
+                        else if (fileHorseWeight > 2200) {
+                            isOverWeight = true;
+                        }
+                    }
+                    if (isUnderWeight) {
+                        cout << "Horse Name: " << fileHorseName << " Class: " << fileHorseClass << " Weight: " << fileHorseWeight << " Under Weight Feed 3.5 Lbs Feed.\n";
+                    }
+                    else if (isOverWeight) {
+                        cout << "Horse Name: " << fileHorseName << " Class: " << fileHorseClass << " Weight: " << fileHorseWeight << " Over Weight Feed 2.5 Lbs Feed.\n";
+                    }
+                    else {
+                        cout << "Horse Name: " << fileHorseName << " Class: " << fileHorseClass << " Weight: " << fileHorseWeight << " Perfect Feed 3.0 Lbs Feed.\n";
+                    }
+                    isOverWeight = false;
+                    isUnderWeight = false;
+                }
+                inputFile.close();
+            
+            case 3:
                 break;
             }
         } while (menuChoice != 1 && menuChoice != 2);
